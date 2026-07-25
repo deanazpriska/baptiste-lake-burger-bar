@@ -1,14 +1,13 @@
 # Baptiste Lake Burger Bar
 
-Full-stack website untuk restoran lokal **Baptiste Lake Burger Bar**, South Baptiste, Alberta — situs publik dengan menu interaktif dan dashboard admin untuk mengelola menu secara mandiri, lengkap dengan upload foto produk dan status ketersediaan real-time.
+Full-stack website untuk restoran **Baptiste Lake Burger Bar**, South Baptiste, Alberta — situs publik dengan menu interaktif dan dashboard admin untuk mengelola menu secara mandiri, lengkap dengan upload foto produk dan status ketersediaan real-time.
 
 ## Fitur Utama
 
 - **Situs publik responsif** — hero section, profil restoran, jam operasional dengan indikator buka/tutup real-time (timezone Mountain Time), lokasi (Google Maps embed), dan galeri ulasan pelanggan.
 - **Menu interaktif** — filter berdasarkan kategori (Beef Burger, Chicken Burger, Drinks), pencarian real-time, dan label ketersediaan (Available/Sold Out) per item.
 - **Dashboard admin** — autentikasi berbasis JWT, CRUD produk penuh (tambah/edit/hapus), upload foto produk, dan toggle ketersediaan.
-- **REST API** — backend terpisah dengan Express.js dan database SQLite sungguhan (bukan flat-file JSON).
-- **Auto-launch dev server** — satu perintah menjalankan backend sekaligus menyajikan frontend, otomatis membuka browser.
+- **REST API** — backend terpisah dengan Express.js dan database SQLite.
 
 ## Tech Stack
 
