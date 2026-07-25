@@ -56,12 +56,9 @@ Server berjalan di `http://localhost:4000` dan browser terbuka otomatis. Environ
 | Variable | Keterangan | Default |
 |---|---|---|
 | `PORT` | Port server | `4000` |
-| `ADMIN_USERNAME` | Username login admin | `admin` |
-| `ADMIN_PASSWORD` | Password login admin | `baptiste123` |
 | `JWT_SECRET` | Secret penandatanganan token | — |
 | `CORS_ORIGIN` | Origin yang diizinkan | `*` |
 
-> Wajib diganti sebelum deploy ke produksi: `ADMIN_PASSWORD` dan `JWT_SECRET`.
 
 ## API Reference
 
