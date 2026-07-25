@@ -36,8 +36,12 @@ app.listen(PORT, () => {
   console.log(`  → Website: ${url}`);
   console.log(`  → Admin:   ${url}/admin`);
 
-  // Open the site in the default browser automatically (dev convenience).
-  import('open').then(({ default: open }) => open(url)).catch(() => {
-    console.log('  (Could not auto-open the browser — open the URL above manually.)');
-  });
+  // Only auto-open a browser for local development — hosting platforms like
+  // Render/Railway run this headless, so skip it there.
+  const isHosted = process.env.RENDER || process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production';
+  if (!isHosted) {
+    import('open').then(({ default: open }) => open(url)).catch(() => {
+      console.log('  (Could not auto-open the browser — open the URL above manually.)');
+    });
+  }
 });
