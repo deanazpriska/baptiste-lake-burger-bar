@@ -1,0 +1,13 @@
+{
+  "name": "baptiste-lake-burger-bar",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Baptiste Lake Burger Bar website — root workspace (run everything from here, no need to cd into backend)",
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "start": "npm start --workspace=backend",
+    "dev": "npm run dev --workspace=backend"
+  }
+}

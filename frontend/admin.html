@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Login — Baptiste Lake Burger Bar</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%94%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Work+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div class="admin-bar">
+  <div class="brand"><span class="dot"></span> Baptiste Lake Burger Bar — Admin</div>
+  <div style="display:flex; align-items:center; gap:16px;">
+    <a class="back" href="index.html">← Back to site</a>
+    <button id="logoutBtn" style="display:none;">Log out</button>
+  </div>
+</div>
+
+<!-- ===== LOGIN ===== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <span class="eyebrow">Staff Only</span>
+    <h1>Admin Login</h1>
+    <div class="login-error" id="loginError">Incorrect username or password.</div>
+    <form id="loginForm">
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Log in</button>
+    </form>
+    <p class="login-hint">Default demo credentials: admin / baptiste123 — change these in the backend .env file.</p>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboard">
+  <div class="dash-wrap">
+    <div class="dash-head">
+      <div>
+        <h1>Menu Manager</h1>
+        <p>Add, edit or remove menu items, and mark each one available or sold out.</p>
+      </div>
+      <button class="btn btn-primary" id="addProductBtn" style="width:auto;">+ Add product</button>
+    </div>
+
+    <div id="statusBanner" class="status-banner"></div>
+
+    <div class="dash-toolbar">
+      <div class="dash-tabs" id="dashTabs">
+        <button class="dash-tab active" data-cat="all">All</button>
+        <button class="dash-tab" data-cat="beef">Beef Burger</button>
+        <button class="dash-tab" data-cat="chicken">Chicken Burger</button>
+        <button class="dash-tab" data-cat="drink">Drinks</button>
+      </div>
+    </div>
+
+    <div class="product-table-wrap">
+      <table class="product-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productTableBody">
+          <tr class="empty-row"><td colspan="5">Loading products…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD / EDIT MODAL ===== -->
+<div class="modal-overlay" id="productModalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Add product</h2>
+    <form id="productForm">
+      <input type="hidden" id="productId">
+      <div class="field">
+        <label for="p-name">Name</label>
+        <input type="text" id="p-name" required placeholder="e.g. Loaded Cheese Curd Poutine">
+      </div>
+      <div class="field">
+        <label for="p-category">Category</label>
+        <select id="p-category" required>
+          <option value="beef">Beef Burger</option>
+          <option value="chicken">Chicken Burger</option>
+          <option value="drink">Drinks</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="p-desc">Description</label>
+        <textarea id="p-desc" required placeholder="Short description shown on the menu card"></textarea>
+      </div>
+      <div class="field">
+        <label for="p-price">Price</label>
+        <input type="text" id="p-price" required placeholder="e.g. $10.50">
+      </div>
+      <div class="field">
+        <label for="p-image">Photo</label>
+        <input type="file" id="p-image" accept="image/png, image/jpeg, image/webp, image/gif">
+        <img id="p-image-preview" alt="" style="display:none; margin-top:10px; width:100%; max-height:160px; object-fit:contain; background:var(--paper); border-radius:8px; border:1px solid #ddd1a6;">
+        <p id="p-image-hint" style="margin:6px 0 0; font-size:.78rem; color:#8a8370;">JPG, PNG, WEBP or GIF, up to 5MB. Leave empty to keep the current photo when editing.</p>
+      </div>
+      <div class="checkbox-field">
+        <input type="checkbox" id="p-available" checked>
+        <label for="p-available">Available on the menu</label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancelModalBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveProductBtn">Save product</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== DELETE CONFIRM MODAL ===== -->
+<div class="modal-overlay confirm-modal" id="deleteModalOverlay">
+  <div class="modal">
+    <h2>Remove this item?</h2>
+    <p>This deletes it from the live menu. This can't be undone.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
