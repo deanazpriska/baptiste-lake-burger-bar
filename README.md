@@ -1,19 +1,49 @@
-# Baptiste Lake Burger Bar — Website
+# Baptiste Lake Burger Bar
 
-Website resmi Baptiste Lake Burger Bar, kodenya dipisah menjadi dua bagian,
-tapi dijalankan lewat satu server saja:
+Full-stack website untuk restoran lokal **Baptiste Lake Burger Bar**, South Baptiste, Alberta — situs publik dengan menu interaktif dan dashboard admin untuk mengelola menu secara mandiri, lengkap dengan upload foto produk dan status ketersediaan real-time.
+
+## Fitur Utama
+
+- **Situs publik responsif** — hero section, profil restoran, jam operasional dengan indikator buka/tutup real-time (timezone Mountain Time), lokasi (Google Maps embed), dan galeri ulasan pelanggan.
+- **Menu interaktif** — filter berdasarkan kategori (Beef Burger, Chicken Burger, Drinks), pencarian real-time, dan label ketersediaan (Available/Sold Out) per item.
+- **Dashboard admin** — autentikasi berbasis JWT, CRUD produk penuh (tambah/edit/hapus), upload foto produk, dan toggle ketersediaan.
+- **REST API** — backend terpisah dengan Express.js dan database SQLite sungguhan (bukan flat-file JSON).
+- **Auto-launch dev server** — satu perintah menjalankan backend sekaligus menyajikan frontend, otomatis membuka browser.
+
+## Tech Stack
+
+| Layer | Teknologi |
+|---|---|
+| Frontend | HTML5, CSS3 (custom), Vanilla JavaScript |
+| Backend | Node.js, Express.js |
+| Database | SQLite (`better-sqlite3`) |
+| Autentikasi | JSON Web Token (JWT), bcrypt |
+| Upload File | Multer |
+| Tooling | npm workspaces |
+
+## Struktur Proyek
 
 ```
 baptiste-lake-burger-bar/
-├─ package.json  → workspace root, supaya install/jalankan cukup dari sini
-├─ frontend/     → situs publik (index.html) + panel admin (admin.html)
-└─ backend/      → REST API (Node.js + Express) + server yang menyajikan frontend
+├─ package.json         # npm workspace root
+├─ frontend/
+│  ├─ index.html         # Situs publik
+│  ├─ admin.html         # Dashboard admin
+│  ├─ css/
+│  ├─ js/
+│  └─ assets/
+└─ backend/
+   ├─ server.js          # Entry point Express
+   ├─ routes/            # auth.js, products.js
+   ├─ middleware/        # auth.js (JWT guard), upload.js (multer)
+   ├─ utils/db.js        # Data access layer (SQLite)
+   ├─ data/               # database.sqlite (runtime)
+   └─ uploads/            # Foto produk (runtime)
 ```
 
-## Jalankan (satu perintah dari folder utama, langsung kebuka)
+## Instalasi & Menjalankan
 
-Cukup dari folder `baptiste-lake-burger-bar/` — **tidak perlu** masuk ke
-folder `backend` dulu:
+Prasyarat: Node.js ≥ 18, npm ≥ 7 (mendukung workspaces).
 
 ```bash
 npm install
@@ -21,74 +51,35 @@ cp backend/.env.example backend/.env
 npm start
 ```
 
-Begitu `npm start` selesai, browser akan **terbuka otomatis** ke
-`http://localhost:4000` dan langsung menampilkan situsnya — tidak perlu lagi
-klik-klik cari file `index.html` secara manual.
+Server berjalan di `http://localhost:4000` dan browser terbuka otomatis. Environment variable dikonfigurasi di `backend/.env`:
 
-> Ini pakai fitur *npm workspaces*, jadi butuh npm versi 7 ke atas (cek
-> dengan `npm -v`). Kalau masih punya npm lama, jalankan `npm install -g npm`
-> dulu untuk update, atau tetap bisa pakai cara lama: `cd backend && npm
-> install && npm start`.
+| Variable | Keterangan | Default |
+|---|---|---|
+| `PORT` | Port server | `4000` |
+| `ADMIN_USERNAME` | Username login admin | `admin` |
+| `ADMIN_PASSWORD` | Password login admin | `baptiste123` |
+| `JWT_SECRET` | Secret penandatanganan token | — |
+| `CORS_ORIGIN` | Origin yang diizinkan | `*` |
 
-- **Situs publik**: `http://localhost:4000`
-- **Panel admin**: `http://localhost:4000/admin` (atau klik "Staff login" di
-  footer situs) — bisa tambah, edit, hapus produk, **upload foto makanan
-  asli** (bukan emoji lagi — item tanpa foto otomatis pakai ikon kategori
-  sebagai cadangan), dan menyalakan/mematikan status ketersediaan tiap item.
-  Foto disimpan di `backend/uploads/` (JPG/PNG/WEBP/GIF, maks 5MB).
+> Wajib diganti sebelum deploy ke produksi: `ADMIN_PASSWORD` dan `JWT_SECRET`.
 
-Kalau browser tidak otomatis terbuka (misalnya dijalankan di server tanpa
-tampilan), buka manual URL di atas.
+## API Reference
 
-Data menu disimpan di database SQLite sungguhan: `backend/data/database.sqlite`
-(dibuat otomatis saat pertama kali `npm start`, lengkap dengan 3 produk
-contoh). Setiap tambah/edit/hapus dari panel admin langsung menulis ke
-database ini lewat query SQL (`backend/utils/db.js`, pakai library
-`better-sqlite3`).
+| Method | Endpoint | Akses | Deskripsi |
+|---|---|---|---|
+| `GET` | `/api/products` | Publik | Daftar seluruh produk |
+| `GET` | `/api/products/:id` | Publik | Detail satu produk |
+| `POST` | `/api/products` | Admin | Tambah produk baru (`multipart/form-data`) |
+| `PUT` | `/api/products/:id` | Admin | Edit produk |
+| `DELETE` | `/api/products/:id` | Admin | Hapus produk |
+| `POST` | `/api/auth/login` | Publik | Login admin, mengembalikan JWT |
 
-> Ingin lihat isi database secara manual? Buka file
-> `backend/data/database.sqlite` dengan tool seperti
-> [DB Browser for SQLite](https://sqlitebrowser.org/) atau ekstensi
-> "SQLite Viewer" di VS Code.
+Endpoint admin memerlukan header `Authorization: Bearer <token>`. Token berlaku 8 jam.
 
-Ubah kredensial admin & secret sebelum dipakai sungguhan, di file `.env`:
+## Deployment
 
-```
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=baptiste123
-JWT_SECRET=ganti_dengan_string_acak_yang_panjang
-```
+Backend menyajikan frontend secara langsung (`express.static`), sehingga cukup satu service untuk deploy (mis. Render, Railway, Fly.io). Data (`backend/data/database.sqlite`, `backend/uploads/`) bersifat *stateful* — pastikan platform hosting mendukung *persistent storage* jika ingin data bertahan lintas deployment.
 
-## Kalau mau frontend & backend tetap dipisah saat menjalankan
+## Lisensi
 
-Masih bisa. Buka `frontend/index.html` langsung sebagai file (atau serve
-dengan `npx serve frontend`) selama backend tetap jalan di langkah di atas —
-tinggal ubah `API_BASE_URL` di `frontend/js/config.js` dari `/api` menjadi
-`http://localhost:4000/api`.
-
-## Ringkasan API
-
-| Method | Endpoint              | Akses   | Keterangan                         |
-|--------|------------------------|---------|-------------------------------------|
-| GET    | `/api/products`        | Publik  | Daftar semua produk                 |
-| GET    | `/api/products/:id`    | Publik  | Detail satu produk                  |
-| POST   | `/api/products`        | Admin   | Tambah produk baru                  |
-| PUT    | `/api/products/:id`    | Admin   | Edit produk (termasuk ketersediaan) |
-| DELETE | `/api/products/:id`    | Admin   | Hapus produk                        |
-| POST   | `/api/auth/login`      | Publik  | Login admin, mengembalikan token    |
-
-Rute admin dilindungi JWT (`Authorization: Bearer <token>`), token berlaku 8 jam.
-
-## Catatan produksi
-
-Sebelum di-deploy secara publik:
-- Ganti `JWT_SECRET` dan `ADMIN_PASSWORD` di `.env`.
-- Set `CORS_ORIGIN` ke domain frontend asli, bukan `*` (kalau frontend
-  disajikan dari server yang sama seperti default sekarang, ini tidak
-  begitu krusial karena tidak lagi lintas-origin).
-- File `backend/data/database.sqlite` dan folder `backend/uploads/` berisi
-  seluruh data menu & foto yang kamu isi lewat panel admin. Keduanya
-  **sengaja tidak di-`.gitignore`** supaya ikut ter-*commit*/ter-*push* saat
-  kamu deploy — begitu online, menu yang sudah kamu isi langsung muncul,
-  tidak perlu diisi ulang dari nol. Kalau repo-nya publik, pastikan tidak
-  ada data sensitif di foto/deskripsi produk sebelum di-push.
+MIT
