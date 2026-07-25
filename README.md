@@ -80,6 +80,3 @@ Endpoint admin memerlukan header `Authorization: Bearer <token>`. Token berlaku 
 
 Backend menyajikan frontend secara langsung (`express.static`), sehingga cukup satu service untuk deploy (mis. Render, Railway, Fly.io). Data (`backend/data/database.sqlite`, `backend/uploads/`) bersifat *stateful* — pastikan platform hosting mendukung *persistent storage* jika ingin data bertahan lintas deployment.
 
-## Lisensi
-
-MIT
