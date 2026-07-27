@@ -4,7 +4,9 @@ const Database = require('better-sqlite3');
 // SQLite database file — created automatically on first run.
 const DB_FILE = path.join(__dirname, '..', 'data', 'database.sqlite');
 const db = new Database(DB_FILE);
-db.pragma('journal_mode = WAL');
+// Using the default rollback journal (not WAL) so every write lands
+// directly in database.sqlite — simpler and safer for a workflow where
+// this file gets committed to git as-is before each deploy.
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS products (
@@ -31,14 +33,44 @@ db.exec(`
   `);
   const seedItems = [
     {
-      category: 'beef', image: null, name: 'The Baptiste Classic',
-      desc: 'Angus beef patty, aged cheddar, lettuce, tomato & house sauce on a toasted bun, served with fries.',
-      price: '$14.50', available: 1,
+      category: 'beef', image: 'cheeseburger.jpg', name: 'Cheeseburger',
+      desc: 'Sesame seed bun topped with a grilled beef patty, cheese, pickles, diced onion, mustard and ketchup.',
+      price: '$8.50', available: 1,
     },
     {
-      category: 'chicken', image: null, name: 'Crispy Chicken Burger',
-      desc: 'Buttermilk-fried chicken breast, pickles, lettuce and mayo on a toasted bun, served with fries.',
-      price: '$13.50', available: 1,
+      category: 'beef', image: 'beef-burger.jpg', name: 'Beef Burger',
+      desc: 'Sesame seed bun with a grilled beef patty, pickles, diced onion, mustard and ketchup.',
+      price: '$8.00', available: 1,
+    },
+    {
+      category: 'beef', image: 'cali-classic.jpg', name: 'Cali Classic',
+      desc: 'Grilled beef patty with melted cheese, crisp lettuce, tomato and a creamy classic sauce on a toasted bun.',
+      price: '$11.50', available: 1,
+    },
+    {
+      category: 'beef', image: 'bbq-beef-rasher-burger.jpg', name: 'BBQ Beef Rasher Burger',
+      desc: 'Grilled beef patty topped with thin beef rashers, melted cheese and smoky BBQ sauce.',
+      price: '$12.00', available: 1,
+    },
+    {
+      category: 'chicken', image: 'bbq-chicken.jpg', name: 'BBQ Chicken',
+      desc: 'Boneless grilled chicken, lettuce, tomato and BBQ sauce on a sesame seed bun.',
+      price: '$10.50', available: 1,
+    },
+    {
+      category: 'chicken', image: 'teriyaki-chicken.jpg', name: 'Teriyaki Chicken',
+      desc: 'Boneless grilled chicken with grilled pineapple, cheese, lettuce, onion, tomato, teriyaki sauce and mayo.',
+      price: '$11.00', available: 1,
+    },
+    {
+      category: 'chicken', image: 'crispy-chicken.jpg', name: 'Crispy Chicken',
+      desc: 'Premium boneless chicken, buttermilk-dipped and breaded to a golden crisp, with lettuce and mayo.',
+      price: '$11.50', available: 1,
+    },
+    {
+      category: 'chicken', image: 'chicken-tender.jpg', name: 'Chicken Tender',
+      desc: 'Premium boneless chicken, buttermilk-dipped and breaded to a golden crisp, tomato, lettuce and a choice of sauce.',
+      price: '$11.50', available: 1,
     },
     {
       category: 'drink', image: null, name: 'Real Ice Cream Milkshake',
