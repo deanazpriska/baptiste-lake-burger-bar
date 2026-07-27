@@ -1,7 +1,13 @@
 node_modules/
 .env
-data/database.sqlite
-data/database.sqlite-wal
-data/database.sqlite-shm
-uploads/*
-!uploads/.gitkeep
+
+# Database & foto produk SEKARANG SENGAJA TIDAK di-ignore, supaya menu yang
+# sudah diisi lewat panel admin ikut terbawa saat kamu commit/push untuk
+# deploy. Kalau nanti kamu ingin balik ke pola development (mulai dari
+# database kosong tiap clone repo), un-comment 4 baris di bawah ini:
+#
+# data/database.sqlite
+# data/database.sqlite-wal
+# data/database.sqlite-shm
+# uploads/*
+# !uploads/.gitkeep
